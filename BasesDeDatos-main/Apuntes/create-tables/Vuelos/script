@@ -1,0 +1,91 @@
+-- Active: 1708043099684@@127.0.0.1@3306@Vuelos
+-- Active: 1708043099684@@127.0.0.1@3306
+CREATE DATABASE Vuelos
+    DEFAULT CHARACTER SET = 'utf8mb4'; 
+
+use Vuelos ;
+
+CREATE TABLE Aeropuerto ( 
+    CodAeropuerto int primary key , 
+    Ciudad varchar(100) not null,
+    Prov varchar(100) not null, 
+    Nombre varchar(100) not null
+);
+
+CREATE TABLE Puede_Aterrizar (
+    CodAeropuerto int not null,
+    Tp_Avion varchar(100) not null,
+    FOREIGN KEY (Tp_Avion) REFERENCES Tipo_avion(Nombre_Tipo),
+    FOREIGN KEY (CodAeropuerto) REFERENCES Aeropuerto(CodAeropuerto)
+);
+
+drop TABLE Aeropuerto;
+
+CREATE TABLE Tipo_avion ( 
+    Nombre_Tipo varchar(100) primary key, 
+    MaxAsientos int unsigned not null,
+    Compania varchar(100) not null
+);
+
+
+CREATE TABLE Avion(
+    idAvion int primary key, 
+    NumTotalAsientos int not null, 
+    Nombre_Tipo varchar(100) not null,
+    FOREIGN key (Nombre_Tipo) REFERENCES Tipo_avion(Nombre_Tipo)
+);
+
+CREATE TABLE Salidas(
+    CodAeropuerto int not null,
+    HoraSal int not null,
+    FOREIGN KEY (CodAeropuerto) REFERENCES Aeropuerto(CodAeropuerto )
+);
+
+CREATE TABLE LLegadas(
+    CodAeropuerto int not null, 
+    HoraLLeg int not null, 
+    FOREIGN KEY (CodAeropuerto) REFERENCES Aeropuerto(CodAeropuerto )
+);
+
+CREATE TABLE Vuelo (
+    Numero int primary key, 
+    DiasSem varchar(100) not null, 
+    Aerolinea varchar(100) not null, 
+    Cod_tarifa int not null, 
+    FOREIGN KEY (Cod_tarifa) REFERENCES Tarifa(Codigo)
+); 
+
+
+CREATE TABLE Tarifa(
+    Codigo int primary key, 
+    Cantidad int not null, 
+    Restricciones varchar(100) not null
+);
+
+CREATE TABLE Aeropuerto_Llegada (
+   HoraLlegada DATE not null, 
+   CodAeropuerto int not null,
+   NumPlan int not null, 
+   Vuelo_Num int not null, 
+   FOREIGN KEY (CodAeropuerto) REFERENCES Aeropuerto(CodAeropuerto), 
+   FOREIGN key (Vuelo_Num) REFERENCES Plan_vuelo(Numero_vuelo),
+   FOREIGN KEY (NumPlan) REFERENCES Plan_vuelo (NumPlan)
+); 
+
+CREATE TABLE Aeropuerto_Salida (
+   HoraSalida time not null, 
+   CodAeropuerto int not null,
+   NumPlan int not null, 
+   Vuelo_Num int not null, 
+   FOREIGN KEY (CodAeropuerto) REFERENCES Aeropuerto(CodAeropuerto), 
+   FOREIGN key (Vuelo_Num) REFERENCES Plan_vuelo(Numero_vuelo),
+   FOREIGN KEY (NumPlan) REFERENCES Plan_vuelo (NumPlan)
+); 
+
+drop TABLE Aeropuerto_Llegada;
+
+CREATE table Plan_vuelo(
+    NumPlan int primary key, 
+    Numero_vuelo int not null, 
+    FOREIGN KEY (Numero_vuelo) REFERENCES Vuelo(Numero)
+);

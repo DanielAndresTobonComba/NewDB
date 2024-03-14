@@ -1,0 +1,45 @@
+
+mysql -h localhost -u root -p 
+para inciar sql y se digita la tabla
+
+show databases 
+mostrar las bases de datos en el pc 
+
+create database "nombre" 
+para crear una bases de datos 
+
+use "nombre" 
+para usar una bases de datos 
+
+DDL : crear 
+
+create table "nombreTabla( campos)"
+para crear una tabla
+
+describe "nombreTabla" 
+dar los datos especificos de una tabla
+
+drop table "nombreTabla" 
+para borrar una tabla 
+
+drop table if exists "nombreTabla" 
+para borrar una tabla si existe sino no marca un error
+
+
+create table if not exists "nombreTabla ()"
+para crear una tabla si no existe
+
+
+
+create index idx_vehiculo_conductor_veh "enter" 
+    on "nombreTabla(campo)
+
+forma correcta de escribir el nombre del index:
+idx "nombreTabla" "campo"
+para crear un indice en un atributo de una tabla
+
+
+MYSQL 
+check(condicion)
+para colocar una restriccion dentro de el campo de un atributo 
+xasda

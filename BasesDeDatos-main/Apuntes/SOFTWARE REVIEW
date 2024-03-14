@@ -1,0 +1,146 @@
+use world;
+ select * from country;
+ 
+select Name , ifnull(indepyear, "N/A") as año_independencia from country ;
+
+select Name , if( indepyear < 1899 , "Antiguamente Independizado" , 
+			if(  indepyear > 1899 , "Recientemente independizado" , "N/A") )
+as Estado_independencia from country ;
+
+select avg(lifeExpectancy) as expectativa_vida_africa from country
+where continent = "Africa";
+
+SELECT name, lifeExpectancy as menor_expectativa
+FROM country
+WHERE continent = 'Africa' 
+AND lifeExpectancy = (SELECT MIN(lifeExpectancy) FROM country WHERE continent = 'Africa')
+LIMIT 1;
+
+
+select name , format(round( gnp / ( population/surfacearea) ,2 ), 2) as Riqueza 
+from country
+where continent = "South America" or continent = "North America"
+order by round( gnp / ( population/surfacearea) ,2 ) desc  , name asc;
+
+-- substring(name , locate(" " , name )) as pos1 
+select name , if(locate(" " , name  ) > 0 , 
+				if(locate(" " , name , locate (" " , name) + 1) = 0 , substring(name , locate(" " , name) + 1),
+																		substring(name , locate (" " , name) + 1 ,
+																			(locate ( " ", name, locate ( " " , name ) +1 ) -1 - locate ( " ",  name ) +1) -1 ))
+                                                                            , "N/A ") as segundo_nombre
+                                                                            
+		from country 
+where continent = "Europe" and locate(" " , name) > 0	
+order by segundo_nombre ;
+
+
+-- CONVERT(LENGTH(REPLACE("a", " ", lower(name) )), SIGNED) ;
+
+SELECT 
+    name, 
+    CONVERT(LENGTH(name), SIGNED) AS longitud,
+    CONVERT(LENGTH(name), SIGNED) - convert( LENGTH(REPLACE( lower (name), 'a', '')) , signed) Repite_letra
+FROM 
+    country 
+WHERE 
+    continent IN ('North America', 'South America');
+
+
+-- OTROS APUNTES IMPORTANTES DE LA CLASE ANTERIOR A LOS APUNTES QUE ESTAN ARRIBA 
+
+
+use world;
+select * from country;
+
+select Name , format(round(GNP / (Population/SurfaceArea),2 ),2) as Repartir_Riqueza from country
+where continent = "North America" or continent = "South America" 
+order by round(GNP / (Population/SurfaceArea),2)  desc , name ;
+
+
+/*select segundo_nombre, 
+	locate(" " , segundo_nombre) as Pos2, */
+    
+select
+    if(locate(" " , segundo_nombre) = 0, 
+    segundo_nombre,
+    substring( segundo_nombre, 1 , locate(" " , segundo_nombre) - 1)) as segundo_nombre_completo
+from
+(select name , 
+	locate(" " , name) as Pos1 , 
+	substring(name , locate(" " , name)+ 1) as segundo_nombre
+	from country 
+	where continent = "Europe" and locate(" " , name) > 1) as S;
+
+
+-- LO SIGUIENTE 
+
+use world;
+
+select * from country;
+
+
+select * from city;
+
+select * from countrylanguage;
+
+-- mostrar el pais con mayor poblacion 
+
+select * from country
+order by Population desc ;
+
+-- mostrar las ciudades con poblacion menor a 1 millon , el listado debe estar ordenado por poblacion de menor a mayor 
+-- y si hay dos ciudades con la misma poblacion mostrarlas en orden alfabetico
+
+select Name , Population  from city 
+where Population < 1000000
+order by Population asc , Name asc 
+limit 10000;
+
+
+-- mostrar los tres paises com mayor poblacion de sur america 
+
+select Name , Continent , Population from country 
+where Continent = "South America"
+order by Population desc
+limit 3;
+
+-- mostrar los idiomas no oficiales hablados en colombia 
+
+select * from countrylanguage
+where CountryCode = "COL" AND  IsOfficial = "f"
+order by Percentage desc;	
+
+
+-- SUBCONSULTAS
+
+-- mostrar los 5 paises europeos con la menor expectativa de vida 
+-- importante
+select * from (	
+select Name , Continent , LifeExpectancy  
+from country 
+where Continent = "Europe" and LifeExpectancy is not null
+order by LifeExpectancy   
+limit 5) country order by LifeExpectancy desc;
+
+SELECT L.name , L.LifeExpectancy
+from (SELECT C.name , C.LifeExpectancy 
+from world.country as C 
+where C.Continent = "Europe" and C.LifeExpectancy is not null
+ORDER BY C.LifeExpectancy
+LIMIT 5) as L 
+order by LifeExpectancy desc , name desc;
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+     
