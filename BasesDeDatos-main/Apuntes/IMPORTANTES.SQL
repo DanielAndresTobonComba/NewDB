@@ -1,9 +1,9 @@
 -- parte 2 sofware review 
 
--- EJERCICIOS 
+-- EJERCICIOS  IMPORTANTES
 
-CREATE DATABASE EXCEPCIONES ;
-USE EXCEPCIONES;
+CREATE DATABASE ejercicios ;
+USE ejercicios;
 
 CREATE TABLE Productos (
     id INT AUTO_INCREMENT,
@@ -56,6 +56,9 @@ select *
 from Clientes;
 
 select * 
+from Ventas;
+
+select * 
 from error_log;
 
 DELIMITER //
@@ -91,7 +94,7 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-call AñadirProducto("Motorola One Fusion" , 250 , 15);
+call AñadirProducto("Motorola" , 250 , 15);
 
 DELIMITER //
 CREATE PROCEDURE RegistrarCliente(IN nombre VARCHAR(255), IN email VARCHAR(255))
@@ -127,7 +130,7 @@ BEGIN
     
 END //
 DELIMITER ;
-call RegistrarCliente("3c ingenieros" , "3cingenieros@xd.com");
+call RegistrarCliente("Abadia Real" , "abadiaReal@gmail.com");
 
 
 drop procedure RealizarVenta;
@@ -192,9 +195,10 @@ BEGIN
 
     SET banderaProducto = FALSE;
     SET banderaCliente = FALSE;
-
-    SELECT COUNT(*) INTO banderaProducto FROM Productos WHERE productoId = productoID;
-    SELECT COUNT(*) INTO banderaCliente FROM Clientes WHERE clienteID = clienteID;
+    
+    -- Verificar si el producto y el cliente existen
+    SELECT COUNT(*) INTO banderaProducto FROM Productos WHERE id = productoID;
+    SELECT COUNT(*) INTO banderaCliente FROM Clientes WHERE id = clienteID;
 
     IF NOT banderaProducto THEN
         SET mensaje_error = CONCAT("ERROR. El ID del producto no existe o es incorrecto");
@@ -208,14 +212,16 @@ BEGIN
         SET mensaje_error = CONCAT("ERROR. La cantidad de venta es inválida");
         INSERT INTO error_log(error_descripcion) VALUES (mensaje_error);
         SELECT mensaje_error;
-    END IF;
-
-    IF banderaProducto AND banderaCliente THEN
-        SELECT stock INTO cantStock FROM Productos WHERE productoId = productoID;
+    ELSE
+        -- Obtener el stock del producto
+        SELECT stock INTO cantStock FROM Productos WHERE id = productoID;
+        
         IF cantStock >= cantidad THEN
+            -- Realizar la venta
             INSERT INTO Ventas(producto_id, cliente_id, cantidad, fecha_venta) 
             VALUES (productoID, clienteID, cantidad, CURDATE()); 
         ELSE
+            -- Manejar error si la cantidad solicitada supera el stock
             SET mensaje_error = CONCAT("ERROR. La cantidad solicitada supera la cantidad en stock: ", cantStock);
             INSERT INTO error_log(error_descripcion) VALUES (mensaje_error);
             SELECT mensaje_error;
@@ -225,4 +231,5 @@ END //
 DELIMITER ;
 
 
-call RealizarVenta (1 , 1 , 16);
+
+call RealizarVenta (2, 2 , 2);
