@@ -1,5 +1,5 @@
 -- Active: 1710891255909@@127.0.0.1@3306@tienda
--- Transacciones Operaciones que se consiuderan o se tratan como si fueran una sola si falla se deshace todo deshace.alter 
+-- Transacciones Operaciones que se considera o se tratan como si fueran una sola si falla se deshace todo deshace.alter 
 
 use prueba_particiones;
 -- Ejemplo de una transaccion
